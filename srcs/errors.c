@@ -1,25 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: layala-s <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/13 11:55:58 by layala-s          #+#    #+#             */
-/*   Updated: 2024/03/18 16:27:14 by layala-s         ###   ########.fr       */
+/*   Created: 2024/11/18 04:51:10 by layala-s          #+#    #+#             */
+/*   Updated: 2024/11/18 04:51:15 by layala-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../so_long.h"
 
-size_t	ft_strlen(const char *c)
+void	exit_error(char *error_type)
 {
-	int	len;
-
-	len = 0;
-	if (c == NULL)
-		return (0);
-	while (c[len] != '\0')
-		len++;
-	return (len);
+	ft_printf(error_type);
+	exit(EXIT_FAILURE);
 }

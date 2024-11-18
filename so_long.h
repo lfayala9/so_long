@@ -9,15 +9,13 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
-typedef struct s_data
+typedef struct s_game
 {
-	void	*img;
-	char	*add;
-	int		bit_pixel;
-	int		line_len;
-	int		endian;
-}	t_data;
+	int	win_height;
+	int	win_width;
+}	t_game;
 
-int	get_width(int fd);
+void	set_dimensions(char *filename, t_game *window);
+void	exit_error(char *error_type);
 
 #endif

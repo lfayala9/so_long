@@ -62,7 +62,9 @@ SRCS		= ft_atoi.c \
 	   		  ft_putnbr.c \
 	   		  ft_puthex.c \
 	   		  ft_putpoint.c \
-	   		  ft_putuns.c 
+	   		  ft_putuns.c  \
+			  get_next_line.c \
+			  get_next_line_utils.c \
 
 OBJS		= ${SRCS:.c=.o}
 

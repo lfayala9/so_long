@@ -16,11 +16,11 @@ int	main(int ac, char **av)
 {
 	void	*mlx;
 	void	*mlx_win;
-    int fd = open(av[1], O_RDWR);
-	int len = get_width(fd);
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, len * 32, 400, "so_long");
-	mlx_loop(mlx);
-	return 0;
-}
+	t_game	game;
 
+	mlx = mlx_init();
+	set_dimensions(av[1], &game);
+	mlx_win = mlx_new_window(mlx, game.win_width, game.win_height, "long");
+	mlx_loop(mlx);
+	return (0);
+}

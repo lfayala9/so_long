@@ -16,7 +16,8 @@ FLAGS = -Wall -Wextra -Werror
 
 OBJS = $(SRCS:.c=.o)
 
-SRCS = ./srcs/get_map.c
+SRCS = ./srcs/get_map.c \
+	   ./srcs/errors.c \
 
 INCLUDES = -I include ./libft/libft.a -Iminilibx-linux -Lminilibx-linux -lmlx -lXext -lX11 -lm -lbsd
 
