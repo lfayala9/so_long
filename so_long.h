@@ -11,11 +11,14 @@
 
 typedef struct s_game
 {
-	int	win_height;
-	int	win_width;
+	void	*mlx_ptr;
+	void	*mlx_win;
+	int		win_height;
+	int		win_width;
 }	t_game;
 
 void	set_dimensions(char *filename, t_game *window);
 void	exit_error(char *error_type);
+void	printgola();
 
 #endif

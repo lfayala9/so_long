@@ -35,7 +35,7 @@ int	check_map(int fd, char *filename)
 	buffer = get_next_line(fd);
 	if (!buffer)
 		return (0);
-	if (fd < 0 || !check_extension(filename, ".ber"))
+	if (fd < 0)
 		return (free(buffer), 0);
 	len = ft_strlen(buffer);
 	if (buffer[len - 1] == '\n')
@@ -46,7 +46,7 @@ int	check_map(int fd, char *filename)
 		if (buffer[cur_len - 1] == '\n')
 			cur_len--;
 		if (cur_len != len)
-			return (0);
+			return (free(buffer) ,0);
 		free(buffer);
 		buffer = get_next_line(fd);
 	}
@@ -57,12 +57,14 @@ void	set_dimensions(char *filename, t_game *window)
 {
 	int		width;
 	int		height;
-	char	*buffer;
 	int		fd;
+	char	*buffer;
 
 	fd = open(filename, O_RDONLY);
+	if (!check_extension(filename, ".ber"))
+		exit_error("Error: Only .ber extension accepted!");
 	if (!check_map(fd, filename))
-		exit_error("Error: Invalid Map!");
+		exit_error("Error: Invalid map dimensions!");
 	close(fd);
 	fd = open(filename, O_RDONLY);
 	width = 0;
