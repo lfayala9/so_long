@@ -1,26 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_realloc.c                                          :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: layala-s <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/12 13:21:11 by layala-s          #+#    #+#             */
-/*   Updated: 2024/11/12 13:21:14 by layala-s         ###   ########.fr       */
+/*   Created: 2024/11/20 04:21:07 by layala-s          #+#    #+#             */
+/*   Updated: 2024/11/20 04:21:47 by layala-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void		*ft_realloc(void *ptr, size_t size)
+void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 {
-	void	*new_ptr;
+	const unsigned char	*s;
+	unsigned char		*d;
 
-	if (ptr == NULL)
-		return (malloc(size));
-	if (!size)
-		return (ptr);
-	new_ptr = malloc(size);
-	ft_memcpy(new_ptr, ptr, size);
-	return (new_ptr);
+	s = src;
+	d = dst;
+	while (n-- > 0)
+	{
+		*d++ = *s;
+		if (*s++ == (unsigned char)c)
+			return (d++);
+	}
+	return (0);
+}
+
+void	*ft_realloc(void *ptr, size_t size)
+{
+	void *temp;
+
+	if (!size && ptr)
+		size = 1;
+	temp = malloc(size);
+	if (ptr)
+	{
+		ft_memccpy(temp, ptr, '\0', size);
+		free (ptr);
+	}
+	return (temp);
 }

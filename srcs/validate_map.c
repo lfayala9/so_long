@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: layala-s <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 04:51:10 by layala-s          #+#    #+#             */
-/*   Updated: 2024/11/18 04:51:15 by layala-s         ###   ########.fr       */
+/*   Updated: 2024/11/20 04:26:00 by layala-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,29 +39,23 @@ int	check_borders(char **map, int width, int height)
 	return (1);
 }
 
-int	check_exit(char **map, int pos_x, int pos_y, t_game *game)
+void	flood_fill(int pos_x, int pos_y, t_game *game, int **visited)
 {
-	if (pos_x < 0 || pos_x >= game->win_height \
-		|| pos_y < 0 || pos_y >= game->win_width \
-		|| map[pos_x][pos_y] == '1')
-		return (0);
-	if (map[pos_x][pos_y] == 'E')
-		return (1);
-	map[pos_x][pos_y] = '1';
-	if (check_exit(map, pos_x - 1, pos_y, game) || 
-		check_exit(map, pos_x + 1, pos_y, game) ||
-		check_exit(map, pos_x, pos_y - 1, game) ||
-		check_exit(map, pos_x, pos_y + 1, game))
-		return (1);
-	return (0);
+	if (pos_x < 0 || pos_x >= game->win_height || \
+		pos_y < 0 || pos_y >= game->win_width || \
+		visited[pos_x][pos_y] || game->map[pos_x][pos_y] == '1')
+		return ;
+	visited[pos_x][pos_y] = 1;
+	flood_fill(pos_x - 1, pos_y, game, visited);
+	flood_fill(pos_x + 1, pos_y, game, visited);
+	flood_fill(pos_x, pos_y - 1, game, visited);
+	flood_fill(pos_x, pos_y + 1, game, visited);
 }
 
-
-int	count_objects(char **map, int width, int height, t_game *game)
+void	count_objects(char **map, int width, int height, t_game *game)
 {
 	int	i;
 	int	j;
-
 
 	i = 0;
 	game->coins = 0;
@@ -74,9 +68,9 @@ int	count_objects(char **map, int width, int height, t_game *game)
 		{
 			if (map[i][j] == 'P')
 				game->p_count++;
-			else if (map[i][j] == 'E')
+			if (map[i][j] == 'E')
 				game->e_count++;
-			else if (map[i][j] == 'C')
+			if (map[i][j] == 'C')
 				game->coins++;
 			j++;
 		}
@@ -86,8 +80,10 @@ int	count_objects(char **map, int width, int height, t_game *game)
 
 void	validate_map(t_game *game)
 {
-	if (!check_exit(game->map, game->pos_y, game->pos_x, game))
+	if (!check_objects(game, 'E') || !check_objects(game, 'P'))
 		exit_error("Error: Exit is not accessible!");
+	if (!check_objects(game, 'C'))
+		exit_error("Error: EVERY Coin should be accessible!");
 	if (game->e_count != 1)
 		exit_error("Error: There should be only ONE exit!");
 	if (game->p_count != 1)
