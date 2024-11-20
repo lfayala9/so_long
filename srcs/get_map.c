@@ -26,34 +26,64 @@ int	check_extension(char *filename, char *extension)
 	return (0);
 }
 
-int	check_map(int fd, char *filename)
+void	check_map(int fd, char *line, int width)
 {
 	char	*buffer;
-	int		len;
 	int		cur_len;
 
-	buffer = get_next_line(fd);
-	if (!buffer)
-		return (0);
-	if (fd < 0)
-		return (free(buffer), 0);
-	len = ft_strlen(buffer);
-	if (buffer[len - 1] == '\n')
-		len--;
-	while (buffer)
+	buffer = line;
+	cur_len = ft_strlen(buffer);
+	if (buffer[cur_len - 1] == '\n')
+		cur_len--;
+	if (cur_len != width)
 	{
-		cur_len = ft_strlen(buffer);
-		if (buffer[cur_len - 1] == '\n')
-			cur_len--;
-		if (cur_len != len)
-			return (free(buffer) ,0);
 		free(buffer);
-		buffer = get_next_line(fd);
+		exit_error("Error: Invalid map dimensions!");
 	}
-	return (1);
+	buffer = line;
+}
+void	assign_map_pos(int i, int width, int height, char *buffer, t_game *window)
+{
+	while (i < width)
+	{
+		if (buffer[i] == 'P')
+		{
+			window->pos_x = i;
+			window->pos_y = height;
+		}
+		if (buffer[i] == 'E')
+		{
+			window->e_pos_x = i;
+			window->e_pos_y = height;
+		}
+		i++;
+	}
 }
 
-void	set_dimensions(char *filename, t_game *window)
+void	assign_map_val(int height, int width, int fd, char *buffer, t_game *window)
+{
+	int i;
+
+	i = 0;
+	while (buffer)
+	{
+		i = 0;
+		assign_map_pos(i, width, height, buffer, window);
+		check_map(fd, buffer, width);
+		window->map = ft_realloc(window->map, sizeof(char *) * (height + 1));
+		if (!window->map)
+			exit_error("Error: Map allocation failed!");
+		window->map[height] = buffer;
+		buffer = get_next_line(fd);
+		height++;
+	}
+	window->map[height] = NULL;
+	window->win_height = height;
+	window->win_width = width;
+	close(fd);
+}
+
+void	get_map(char *filename, t_game *window)
 {
 	int		width;
 	int		height;
@@ -61,23 +91,15 @@ void	set_dimensions(char *filename, t_game *window)
 	char	*buffer;
 
 	fd = open(filename, O_RDONLY);
-	if (!check_extension(filename, ".ber"))
-		exit_error("Error: Only .ber extension accepted!");
-	if (!check_map(fd, filename))
-		exit_error("Error: Invalid map dimensions!");
-	close(fd);
-	fd = open(filename, O_RDONLY);
-	width = 0;
+	if (fd < 0)
+		exit_error("Error: File not found!");
 	height = 0;
 	buffer = get_next_line(fd);
+	if (!buffer)
+		exit_error("Error: Empty file!");
 	width = ft_strlen(buffer) - 1;
-	while (buffer)
-	{
-		free(buffer);
-		buffer = get_next_line(fd);
-		height++;
-	}
-	window->win_height = height * 32;
-	window->win_width = width * 32;
-	close(fd);
+	window->map = malloc(sizeof(char *) * 1);
+	if (!window->map)
+		exit_error("Error: Map allocation failed!");
+	assign_map_val(height, width, fd, buffer, window);
 }

@@ -65,6 +65,7 @@ SRCS		= ft_atoi.c \
 	   		  ft_putuns.c  \
 			  get_next_line.c \
 			  get_next_line_utils.c \
+			  ft_realloc.c \
 
 OBJS		= ${SRCS:.c=.o}
 

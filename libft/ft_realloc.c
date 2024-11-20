@@ -1,19 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   ft_realloc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: layala-s <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 04:51:10 by layala-s          #+#    #+#             */
-/*   Updated: 2024/11/18 04:51:15 by layala-s         ###   ########.fr       */
+/*   Created: 2024/11/12 13:21:11 by layala-s          #+#    #+#             */
+/*   Updated: 2024/11/12 13:21:14 by layala-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../so_long.h"
+#include "libft.h"
 
-void	exit_error(char *error_type)
+void		*ft_realloc(void *ptr, size_t size)
 {
-	ft_printf(error_type);
-	exit(EXIT_FAILURE);
+	void	*new_ptr;
+
+	if (ptr == NULL)
+		return (malloc(size));
+	if (!size)
+		return (ptr);
+	new_ptr = malloc(size);
+	ft_memcpy(new_ptr, ptr, size);
+	return (new_ptr);
 }
