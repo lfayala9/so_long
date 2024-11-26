@@ -12,9 +12,11 @@
 
 #include "../so_long.h"
 
-void	exit_error(char *error_type)
+void	exit_error(char *error_type, t_game *game)
 {
-	ft_printf(error_type);
+	if (game)
+		free_map(game);
+	ft_printf("%s\n", error_type);
 	exit(EXIT_FAILURE);
 }
 
@@ -39,17 +41,28 @@ int	check_borders(char **map, int width, int height)
 	return (1);
 }
 
-void	flood_fill(int pos_x, int pos_y, t_game *game, int **visited)
+int	check_value(t_game *game)
 {
-	if (pos_x < 0 || pos_x >= game->win_height || \
-		pos_y < 0 || pos_y >= game->win_width || \
-		visited[pos_x][pos_y] || game->map[pos_x][pos_y] == '1')
-		return ;
-	visited[pos_x][pos_y] = 1;
-	flood_fill(pos_x - 1, pos_y, game, visited);
-	flood_fill(pos_x + 1, pos_y, game, visited);
-	flood_fill(pos_x, pos_y - 1, game, visited);
-	flood_fill(pos_x, pos_y + 1, game, visited);
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < game->win_height)
+	{
+		j = 0;
+		while (j < game->win_width)
+		{
+			if (game->map[i][j] != 'P' && \
+				game->map[i][j] != 'E' && \
+				game->map[i][j] != '1' && \
+				game->map[i][j] != '0' && \
+				game->map[i][j] != 'C')
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }
 
 void	count_objects(char **map, int width, int height, t_game *game)
@@ -80,14 +93,18 @@ void	count_objects(char **map, int width, int height, t_game *game)
 
 void	validate_map(t_game *game)
 {
-	if (!check_objects(game, 'E') || !check_objects(game, 'P'))
-		exit_error("Error: Exit is not accessible!");
-	if (!check_objects(game, 'C'))
-		exit_error("Error: EVERY Coin should be accessible!");
 	if (game->e_count != 1)
-		exit_error("Error: There should be only ONE exit!");
+		exit_error("Error: There should be only ONE exit!", game);
 	if (game->p_count != 1)
-		exit_error("Error: There should be only ONE player!");
+		exit_error("Error: There should be only ONE player!", game);
+	if (game->coins == 0)
+		exit_error("Error: There should be at least ONE Coin", game);
 	if (check_borders(game->map, game->win_width, game->win_height) == 0)
-		exit_error("Error: The border character in the .ber file should be 1!");
+		exit_error("Error: Border character in the .ber should be 1!", game);
+	if (!check_value(game))
+		exit_error("Error: Invalid character in map", game);
+	if (!check_objects(game, 'E') || !check_objects(game, 'P'))
+		exit_error("Error: Exit is not accessible!", game);
+	if (!check_objects(game, 'C'))
+		exit_error("Error: EVERY Coin should be accessible!", game);
 }

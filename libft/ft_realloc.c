@@ -30,7 +30,7 @@ void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 
 void	*ft_realloc(void *ptr, size_t size)
 {
-	void *temp;
+	void	*temp;
 
 	if (!size && ptr)
 		size = 1;

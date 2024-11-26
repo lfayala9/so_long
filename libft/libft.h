@@ -70,6 +70,7 @@ size_t	gnl_ft_strlcpy(char *dest, const char *src, size_t size);
 size_t	gnl_ft_strlcat(char *dest, const char *src, size_t size);
 char	*gnl_ft_strjoin(char *s1, char *s2);
 char	*get_next_line(int fd);
+void	ft_free_gnl(char **p);
 
 typedef struct s_list
 {

@@ -30,3 +30,21 @@ int	get_line_count(char *filename)
 	close(fd);
 	return (len);
 }
+
+void	free_map(t_game *win)
+{
+	int	i;
+
+	i = 0;
+	if (win->map)
+	{
+		while (i < win->win_height)
+		{
+			if (win->map[i])
+				free(win->map[i]);
+			i++;
+		}
+		free(win->map);
+		win->map = NULL;
+	}
+}

@@ -16,8 +16,8 @@ typedef struct s_game
 	char	**map;
 	int		win_height;
 	int		win_width;
-	int		map_height;
-	int		map_width;
+	// int		map_height;
+	// int		map_width;
 	int		e_pos_y;
 	int		e_pos_x;
 	int		pos_x;
@@ -29,7 +29,8 @@ typedef struct s_game
 
 void	get_map(char *filename, t_game *window);
 void	count_objects(char **map, int width, int height, t_game *game);
-void	exit_error(char *error_type);
+void 	free_map(t_game *win);
+void	exit_error(char *error_type, t_game *game);
 void	validate_map(t_game *game);
 int		get_line_count(char *filename);
 int		check_objects(t_game *game, char object);

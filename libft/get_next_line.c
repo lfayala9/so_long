@@ -12,94 +12,90 @@
 
 #include "libft.h"
 
-int	get_line_break(char	*buffer)
+static char	*read_file(int fd, char *buffer)
 {
-	int	line_break;
+	char	*tmp_buff;
+	int		rd_bytes;
 
-	line_break = 0;
-	while (buffer[line_break] && buffer[line_break] != '\n')
-		line_break++;
-	if (buffer[line_break] == '\n')
-		line_break++;
-	return (line_break);
-}
-
-char	*read_file(int fd, char *buffer)
-{
-	char	*tmp_buf;
-	ssize_t	bytes;
-
-	bytes = 1;
-	tmp_buf = (char *)malloc(BUFFER_SIZE + 1);
-	if (!tmp_buf)
+	tmp_buff = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
+	if (!tmp_buff)
 		return (NULL);
-	while (bytes > 0 && !gnl_ft_strchr(buffer, '\n'))
+	rd_bytes = 1;
+	while (rd_bytes != 0)
 	{
-		bytes = read(fd, tmp_buf, BUFFER_SIZE);
-		if (bytes == -1)
-			return (free(tmp_buf), NULL);
-		else
+		rd_bytes = read(fd, tmp_buff, BUFFER_SIZE);
+		if (rd_bytes == -1)
 		{
-			tmp_buf[bytes] = '\0';
-			buffer = gnl_ft_strjoin(buffer, tmp_buf);
+			free(tmp_buff);
+			free(buffer);
+			return (NULL);
 		}
-		if (!buffer)
-			return (free(tmp_buf), NULL);
+		tmp_buff[rd_bytes] = '\0';
+		buffer = gnl_ft_strjoin(buffer, tmp_buff);
+		if (gnl_ft_strchr(tmp_buff, '\n'))
+			break ;
 	}
-	free(tmp_buf);
+	free(tmp_buff);
+	tmp_buff = NULL;
 	return (buffer);
 }
 
-char	*get_line(char *buffer)
+static char	*get_line(char *buffer)
 {
 	char	*line;
-	int		line_break;
+	int		i;
 
-	line_break = 0;
-	if (!buffer[line_break])
+	i = 0;
+	if (!buffer[i])
 		return (NULL);
-	line_break = get_line_break(buffer);
-	line = (char *)malloc(sizeof(char) * (line_break + 1));
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (buffer[i] != '\n' && buffer[i] == '\0')
+	{
+		line = ft_calloc(i + 1, sizeof(char));
+	}
+	else
+		line = ft_calloc(i + 2, sizeof(char));
 	if (!line)
 		return (NULL);
-	line_break = 0;
-	while (buffer[line_break] && buffer[line_break] != '\n')
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
 	{
-		line[line_break] = buffer[line_break];
-		line_break++;
+		line[i] = buffer[i];
+		i++;
 	}
-	if (buffer[line_break] == '\n')
-		line[line_break++] = '\n';
-	line[line_break] = '\0';
+	if (buffer[i] && buffer[i] == '\n')
+		line[i++] = '\n';
 	return (line);
 }
 
-char	*store_buffer(char *buffer)
+static char	*store_buffer(char *buffer)
 {
-	char	*new_buff;
-	int		line_break;
 	int		i;
-	int		len;
+	int		c;
+	char	*s;
 
 	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
 	if (!buffer[i])
 	{
 		free(buffer);
 		return (NULL);
 	}
-	line_break = get_line_break(buffer);
-	len = gnl_ft_strlen(buffer) - line_break + 1;
-	new_buff = (char *)malloc(len * sizeof(char));
-	if (!new_buff)
+	s = (char *)ft_calloc(sizeof(char), (ft_strlen(buffer) - i));
+	if (!s)
 	{
-		free(buffer);
+		free(s);
 		return (NULL);
 	}
-	while (buffer[line_break])
-		new_buff[i++] = buffer[line_break++];
-	new_buff[i] = '\0';
+	i++;
+	c = 0;
+	while (buffer[i])
+		s[c++] = buffer[i++];
+	s[c] = '\0';
 	free(buffer);
-	return (new_buff);
+	return (s);
 }
 
 char	*get_next_line(int fd)
