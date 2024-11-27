@@ -107,4 +107,6 @@ void	validate_map(t_game *game)
 		exit_error("Error: Exit is not accessible!", game);
 	if (!check_objects(game, 'C'))
 		exit_error("Error: EVERY Coin should be accessible!", game);
+	game->win_height = game->win_height * 32;
+	game->win_width = game->win_width * 32;
 }

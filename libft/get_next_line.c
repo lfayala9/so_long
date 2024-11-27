@@ -12,103 +12,190 @@
 
 #include "libft.h"
 
-static char	*read_file(int fd, char *buffer)
+void	ft_free_gnl(char **p)
+/*
+** free's a given pointer and set's it to NULL
+*/
 {
-	char	*tmp_buff;
-	int		rd_bytes;
-
-	tmp_buff = ft_calloc((BUFFER_SIZE + 1), sizeof(char));
-	if (!tmp_buff)
-		return (NULL);
-	rd_bytes = 1;
-	while (rd_bytes != 0)
-	{
-		rd_bytes = read(fd, tmp_buff, BUFFER_SIZE);
-		if (rd_bytes == -1)
-		{
-			free(tmp_buff);
-			free(buffer);
-			return (NULL);
-		}
-		tmp_buff[rd_bytes] = '\0';
-		buffer = gnl_ft_strjoin(buffer, tmp_buff);
-		if (gnl_ft_strchr(tmp_buff, '\n'))
-			break ;
-	}
-	free(tmp_buff);
-	tmp_buff = NULL;
-	return (buffer);
+	free(*p);
+	*p = NULL;
 }
 
-static char	*get_line(char *buffer)
+int	ft_strlen_gnl(char *s)
+/*
+** returns length of a string until '\0'
+** if the string is NULL return is 0
+*/
+{
+	int	i;
+
+	i = 0;
+	if (s == NULL)
+		return (0);
+	while (s && s[i])
+	{
+		i++;
+	}
+	return (i);
+}
+
+int	ft_strchr_gnl(char *s, int c, int flag)
+/*
+** finds char c in string s and returns its position as an integer
+** if flag == 1 return is -5 when input string is NULL
+** if flag == 0 return is -1 when input string is NULL
+*/
+{
+	int	i;
+
+	if (flag == 1 && s == NULL)
+		return (-5);
+	i = 0;
+	while (s && s[i])
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+char	*ft_strnjoin_gnl(char *s1, char *s2, int n)
+/*
+** joins two strings
+** first string does not have o exist
+** only n characters of the second string get copied
+** output is a allocated string
+*/
+{
+	char	*output;
+	int		i;
+	int		i2;
+
+	i = 0;
+	i2 = 0;
+	if (s2[i2] == '\0')
+		return (NULL);
+	output = malloc(ft_strlen_gnl(s1) + n + 1);
+	if (output == NULL)
+		return (NULL);
+	if (s1 != NULL)
+	{
+		while (s1[i] != '\0')
+		{
+			output[i] = s1[i];
+			i++;
+		}
+	}
+	while (s2 && s2[i2] != '\0' && i2 < n)
+		output[i++] = s2[i2++];
+	output[i] = '\0';
+	if (s1)
+		ft_free_gnl(&s1);
+	return (output);
+}
+
+char	*ft_strndup_gnl(char *input, int n)
+/*
+** duplicates n characters from input into output
+** output is a allocated string
+*/
+{
+	char	*output;
+	int		len;
+	int		i;
+
+	i = 0;
+	len = n;
+	output = malloc(len + 1);
+	if (output == NULL)
+		return (NULL);
+	while (input && input[i] != '\0' && i < n)
+	{
+		output[i] = input[i];
+		i++;
+	}
+	output[i] = '\0';
+	return (output);
+}
+
+void	*ft_calloc_gnl(size_t nelem, size_t elsize)
+{
+	char			*ptr;
+	unsigned int	i;
+	size_t			x;
+
+	i = 0;
+	x = nelem * elsize;
+	ptr = (char *)malloc(x);
+	if (ptr == NULL)
+		return (0);
+	while (i < x)
+	{
+		ptr[i] = 0;
+		i++;
+	}
+	return (ptr);
+}
+
+char	*ft_update_nl_gnl(char **next_line, int position)
+{
+	char	*tmp;
+	int		len;
+
+	len = ft_strlen_gnl(*next_line) - position;
+	tmp = ft_strndup_gnl(*next_line + position, len);
+	ft_free_gnl(next_line);
+	*next_line = tmp;
+	return (*next_line);
+}
+
+char	*ft_output_gnl(char **next_line, int position, int bytes)
 {
 	char	*line;
-	int		i;
 
-	i = 0;
-	if (!buffer[i])
-		return (NULL);
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (buffer[i] != '\n' && buffer[i] == '\0')
+	if (((bytes == 0 || bytes == -1) && *next_line == NULL) || position == -5)
 	{
-		line = ft_calloc(i + 1, sizeof(char));
+		if (*next_line)
+			return (*next_line);
+		return (NULL);
 	}
+	line = NULL;
+	if (position == -1)
+		position = ft_strlen_gnl(*next_line);
 	else
-		line = ft_calloc(i + 2, sizeof(char));
-	if (!line)
-		return (NULL);
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] && buffer[i] == '\n')
-		line[i++] = '\n';
+		position++;
+	line = ft_strndup_gnl(*next_line, position);
+	if (position == ft_strlen_gnl(*next_line))
+		ft_free_gnl(next_line);
+	else
+		*next_line = ft_update_nl_gnl(next_line, position);
 	return (line);
-}
-
-static char	*store_buffer(char *buffer)
-{
-	int		i;
-	int		c;
-	char	*s;
-
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
-	{
-		free(buffer);
-		return (NULL);
-	}
-	s = (char *)ft_calloc(sizeof(char), (ft_strlen(buffer) - i));
-	if (!s)
-	{
-		free(s);
-		return (NULL);
-	}
-	i++;
-	c = 0;
-	while (buffer[i])
-		s[c++] = buffer[i++];
-	s[c] = '\0';
-	free(buffer);
-	return (s);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
-	char		*line;
+	static char	*next_line;
+	char		*buff;
+	int			position;
+	int			bytes;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (BUFFER_SIZE <= 0 || fd < 0 || fd > 10240)
 		return (NULL);
-	buffer = read_file(fd, buffer);
-	if (!buffer)
-		return (NULL);
-	line = get_line(buffer);
-	buffer = store_buffer(buffer);
-	return (line);
+	buff = NULL;
+	position = ft_strchr_gnl(next_line, '\n', 0);
+	while (position == -1 && position != -5)
+	{
+		buff = ft_calloc_gnl(BUFFER_SIZE + 1, 1);
+		if (buff == NULL)
+			return (NULL);
+		bytes = read(fd, buff, BUFFER_SIZE);
+		if (bytes == 0 || bytes == -1)
+			break ;
+		next_line = ft_strnjoin_gnl(next_line, buff, bytes);
+		position = ft_strchr_gnl(next_line, '\n', 1);
+		ft_free_gnl(&buff);
+	}
+	ft_free_gnl(&buff);
+	return (ft_output_gnl(&next_line, position, bytes));
 }

@@ -78,6 +78,12 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct s_line
+{
+	char			*str_buf;
+	struct s_line	*next;
+}	t_line;
+
 void	ft_lstclear(t_list **lst, void (*del)(void*));
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
 void	ft_lstiter(t_list *lst, void (*f)(void *));

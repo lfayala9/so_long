@@ -107,6 +107,6 @@ void	get_map(char *filename, t_game *window)
 		close(fd);
 		exit_error("Error: Map allocation failed!", window);
 	}
-	window->win_width = ft_strlen(buffer) - 1;
+	window->win_width = (ft_strlen(buffer) - 1);
 	assign_map_val(fd, buffer, window, len);
 }
