@@ -13,16 +13,14 @@ typedef struct s_game
 {
 	void	*mlx_ptr;
 	void	*mlx_win;
-	void	*background;
-	void	*coin;
-	void	*player;
+	void	*object;
 	char	**map;
 	int		win_height;
 	int		win_width;
 	int		e_pos_y;
 	int		e_pos_x;
-	int		pos_x;
-	int		pos_y;
+	int		p_pos_x;
+	int		p_pos_y;
 	int		coins;
 	int		p_count;
 	int		e_count;
@@ -36,5 +34,8 @@ void	validate_map(t_game *game);
 int		get_line_count(char *filename);
 int		check_objects(t_game *game, char object);
 void	flood_fill(int pos_x, int pos_y, t_game *game, int **visited);
+int 	exit_game(t_game *game);
 int		check_extension(char *filename, char *extension);
+void	render_game(t_game *game);
+
 #endif

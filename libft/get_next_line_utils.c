@@ -12,13 +12,16 @@
 
 #include "libft.h"
 
-void	ft_free_gnl(char **p)
+size_t	gnl_ft_strlen(const char *c)
 {
-	if (*p)
-	{
-		free(*p);
-		*p = NULL;
-	}
+	int	len;
+
+	len = 0;
+	if (c == NULL)
+		return (0);
+	while (c[len] != '\0')
+		len++;
+	return (len);
 }
 
 char	*gnl_ft_strchr(char *s, int c)
@@ -38,7 +41,7 @@ size_t	gnl_ft_strlcpy(char *dest, const char *src, size_t size)
 	size_t	len;
 
 	i = 0;
-	len = ft_strlen(src);
+	len = gnl_ft_strlen(src);
 	if (!src || !dest)
 		return (0);
 	while (size > 1 && src[i] != '\0')
@@ -59,8 +62,8 @@ size_t	gnl_ft_strlcat(char *dest, const char *src, size_t size)
 	size_t	src_len;
 
 	i = 0;
-	dest_len = ft_strlen(dest);
-	src_len = ft_strlen(src);
+	dest_len = gnl_ft_strlen(dest);
+	src_len = gnl_ft_strlen(src);
 	if (size == 0)
 		return (src_len);
 	if (size < dest_len)
@@ -81,18 +84,17 @@ char	*gnl_ft_strjoin(char *s1, char *s2)
 	size_t	len;
 	char	*join;
 
-	len = ft_strlen(s1) + ft_strlen(s2);
+	len = gnl_ft_strlen(s1) + gnl_ft_strlen(s2);
 	join = (char *)malloc(len + 1 * (sizeof(char)));
 	if (join == NULL)
-		return (ft_free_gnl(&s1), NULL);
+		return (NULL);
 	if (s1)
-	{
 		gnl_ft_strlcpy(join, s1, len + 1);
-		ft_free_gnl(&s1);
-	}
 	else
 		join[0] = '\0';
 	if (s2)
 		gnl_ft_strlcat(join, s2, len + 1);
+	if (s1)
+		free(s1);
 	return (join);
 }

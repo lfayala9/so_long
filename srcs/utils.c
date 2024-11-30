@@ -48,3 +48,10 @@ void	free_map(t_game *win)
 		win->map = NULL;
 	}
 }
+
+int exit_game(t_game *game)
+{
+	mlx_destroy_window(game->mlx_ptr, game->mlx_win);
+	printf("You left the game :(");
+	exit(EXIT_SUCCESS);
+}

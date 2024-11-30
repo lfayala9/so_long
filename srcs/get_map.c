@@ -49,8 +49,8 @@ void	assign_map_pos(int i, char *buffer, t_game *win)
 	{
 		if (buffer[i] == 'P')
 		{
-			win->pos_y = win->win_height;
-			win->pos_x = i;
+			win->p_pos_y = win->win_height;
+			win->p_pos_x = i;
 		}
 		if (buffer[i] == 'E')
 		{
@@ -100,7 +100,7 @@ void	get_map(char *filename, t_game *window)
 		exit_error("Error: Empty file!", window);
 		close(fd);
 	}
-	window->map = malloc(sizeof(char *) * len);
+	window->map = malloc(sizeof(char *) * (len + 1));
 	if (!window->map)
 	{
 		free(buffer);

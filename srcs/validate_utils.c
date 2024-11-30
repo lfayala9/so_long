@@ -87,7 +87,7 @@ int	check_objects(t_game *game, char object)
 		}
 		i++;
 	}
-	flood_fill(game->pos_x, game->pos_y, game, visited);
+	flood_fill(game->p_pos_x, game->p_pos_y, game, visited);
 	locate_target(game, &found, visited, object);
 	return (found > 0);
 }

@@ -12,27 +12,6 @@
 
 #include "so_long.h"
 
-void	render_background(t_game *game, void **object, char *path)
-{
-	int		y;
-	int		x;
-	int		img_width;
-	int		img_height;
-	
-	*object = mlx_xpm_file_to_image(game->mlx_ptr, path, &img_width, &img_height);
-	y = 0;
-	while (y < game->win_height)
-	{
-		x = 0;
-		while (x < game->win_width)
-		{
-			mlx_put_image_to_window(game->mlx_ptr, game->mlx_win, *object, x, y);
-			x += 32;
-		}
-		y += 32;
-	}
-}
-
 int	main(int ac, char **av)
 {
 	t_game	game;
@@ -42,10 +21,11 @@ int	main(int ac, char **av)
 	get_map(av[1], &game);
 	count_objects(game.map, game.win_width, game.win_height, &game);
 	validate_map(&game);
+	printf("exit pos y: %d\nexit pos x: %d\n", game.p_pos_y, game.p_pos_x);
 	game.mlx_ptr = mlx_init();
  	game.mlx_win = mlx_new_window(game.mlx_ptr, game.win_width, \
 				game.win_height, "So_Long");
-	render_background(&game, (void **)&game.background, "./assets/ground.xpm");
+	render_game(&game);
 	mlx_loop(game.mlx_ptr);
 	free_map(&game);
 	return (0);
