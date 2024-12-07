@@ -21,11 +21,13 @@ int	main(int ac, char **av)
 	get_map(av[1], &game);
 	count_objects(game.map, game.win_width, game.win_height, &game);
 	validate_map(&game);
-	printf("exit pos y: %d\nexit pos x: %d\n", game.p_pos_y, game.p_pos_x);
 	game.mlx_ptr = mlx_init();
- 	game.mlx_win = mlx_new_window(game.mlx_ptr, game.win_width, \
+	game.mlx_win = mlx_new_window(game.mlx_ptr, game.win_width, \
 				game.win_height, "So_Long");
+	game.is_collected = 0;
+	game.steps = 0;
 	render_game(&game);
+	mlx_key_hook(game.mlx_win, hooks, &game);
 	mlx_loop(game.mlx_ptr);
 	free_map(&game);
 	return (0);

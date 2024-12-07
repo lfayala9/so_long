@@ -49,9 +49,36 @@ void	free_map(t_game *win)
 	}
 }
 
-int exit_game(t_game *game)
+void	free_game(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	if (game->object)
+	{
+		if (game->object->wall)
+			mlx_destroy_image(game->mlx_ptr, game->object->wall);
+		if (game->object->player)
+			mlx_destroy_image(game->mlx_ptr, game->object->player);
+		if (game->object->background)
+			mlx_destroy_image(game->mlx_ptr, game->object->background);
+		if (game->object->coin)
+			mlx_destroy_image(game->mlx_ptr, game->object->coin);
+		if (game->object->exit)
+			mlx_destroy_image(game->mlx_ptr, game->object->exit);
+		free(game->object);
+	}
+	while (game->map[i])
+		free(game->map[i++]);
+	free(game->map);
+	mlx_destroy_display(game->mlx_ptr);
+	free(game->mlx_ptr);
+}
+
+int	exit_game(t_game *game)
 {
 	mlx_destroy_window(game->mlx_ptr, game->mlx_win);
-	printf("You left the game :(");
+	ft_printf("You left the game :( %d\n", game->coins);
+	free_game(game);
 	exit(EXIT_SUCCESS);
 }

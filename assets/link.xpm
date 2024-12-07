@@ -1,7 +1,7 @@
 /* XPM */
 static char * link_sprite_xpm[] = {
 "32 32 192 2",
-"  	c None",
+"  	c #AD945A",
 ". 	c #000000",
 "+ 	c #000100",
 "@ 	c #414141",

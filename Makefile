@@ -21,6 +21,7 @@ SRCS = ./srcs/get_map.c \
 	   ./srcs/validate_utils.c \
 	   ./srcs/utils.c \
 	   ./srcs/renders.c \
+	   ./srcs/move.c \
 
 INCLUDES = -I include ./libft/libft.a -Iminilibx-linux -Lminilibx-linux -lmlx -lXext -lX11 -lm -lbsd
 
@@ -29,7 +30,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 			@make -C libft
 			@make -C minilibx-linux
-			@gcc -fsanitize=address main.c $(SRCS) $(INCLUDES) -o $(NAME)
+			@gcc -fsanitize=address -fsanitize=leak main.c $(SRCS) $(INCLUDES) -o $(NAME)
 
 clean:
 		@make clean -C libft

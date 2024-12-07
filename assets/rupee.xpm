@@ -1,7 +1,7 @@
 /* XPM */
 static char * rupee_spritejpg_xpm[] = {
 "32 32 92 2",
-"  	c None",
+"  	c #AD945A",
 ". 	c #222035",
 "+ 	c #222133",
 "@ 	c #03010F",
